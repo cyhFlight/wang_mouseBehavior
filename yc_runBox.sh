@@ -9,7 +9,7 @@
 #SBATCH --mail-user=yuhangc@princeton.edu
 #SBATCH -o /projects/WANG/mouseBehavior/slurm_logs/slurm-%A_%a.out # STDOUT
 #SBATCH -D /projects/WANG/mouseBehavior/
-#SBATCH --array=1-10
+#SBATCH --array=1-3
 
 export MATLABPATH='/tigress/WANG/mouseBehavior/leap/'
 export HDF5_PLUGIN_PATH=/tigress/WANG/mouseBehavior/include/HDF5/plugins
