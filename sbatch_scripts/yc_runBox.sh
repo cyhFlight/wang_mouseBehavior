@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=videoMATLAB
+#SBATCH --job-name=bxInit
 #SBATCH -N 1
 #SBATCH --time=2:59:00
 #SBATCH --mem=150000

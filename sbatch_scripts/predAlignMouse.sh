@@ -1,8 +1,14 @@
 #!/usr/bin/bash
+#SBATCH -job-name=prdAM
 #SBATCH --time=1:59:00
 #SBATCH --mem=128000
 #SBATCH -N 1
 #SBATCH --ntasks-per-node=4
+#SBATCH --mail-type=end
+#SBATCH --mail-type=fail
+#SBATCH --mail-user=yuhangc@princeton.edu
+#SBATCH -D /projects/WANG/mouseBehavior/leap/
+#SBATCH -o /projects/WANG/mouseBehavior/slurm_logs/slurm-%A_%a.out # STDOUT
 #SBATCH --gres=gpu:1
 #SBATCH --array=1-3
 

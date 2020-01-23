@@ -1,0 +1,104 @@
+﻿---MOVING PROCESSING AND ALIGNMENT---
+
+1. Navigate to folder with all movies for analysis and create following subfolders: 'box', 'aligned', 'leapout' and set rights to rwxrwxrwx or 0777
+2. On DELLA navigate to folder with movies then run:  printf '%s\n' "$PWD"/*.h5 > YOURNAME_List.txt
+3. Navigate to: 'projects/WANG/mouseBehavior/' to edit runBOX_jv.sh entries: 
+	array=1-PUT NUMBER OF FILES;
+	listOfFiles = path-to-/YOURNAME_List.txt; 
+	check that matlab function is right for your experiment(makeMOuseBox2)
+	savePath(ex: '/tigress/USER/../../box'), arrayLength
+4. Navigate to: 'projects/WANG/mouseBehavior/' 
+	On DELLA run code: sbatch runBox_jv.sh
+	to check progress: squeue -u jverpeut
+	check box movies in savePath by plotting mouseDataBox from '*_box_data.mat'
+5. On DELLA navigate to 'box' folder then run: printf '%s\n' "$PWD"/*.h5 > YOURNAME_BOX_List.txt
+	* this is now done using '$ sh make_BOX_list.sh'
+5a. start matlab in line and make YOURNAME_PRED_List.txt with ‘_PREDICTED.h5’ file endings from BOX list:
+/usr/licensed/bin/matlab-R2017b -nosplash -nodesktop -nodisplay -singleCompThread -nojvm -r MATLAB_command
+	% in matlab run the following 
+	F = 'YOURNAME_BOX_List.txt'
+	fid = fopen(F);
+	data = textscan(fid,'%s');
+	fclose(fid);
+	files = data{1};
+	for i = 1:length(files)
+	files2{i} = [files{i}(1:end-3) '_PREDICTED.h5'];
+	end
+
+	fid = fopen('YOURNAME_PRED_List.txt','wt');
+	for i = 1:length(files2)
+	fprintf(fid,[files2{i} '\n']);
+	end
+	fclose(fid) 
+
+* this is now done using '$ matlab_2017b predict.m'
+* 
+
+*check videos with plotcentroidbox.JV
+need to open matlab as: /usr/licensed/bin/matlab-R2017b -nosplash -nodesktop -nodisplay -singleCompThread -r MATLAB_command
+
+6. Navigate to 'projects/WANG/mouseBehavior/leap' to edit predAlignMouse.sh entries: 
+    change predAlignMouse.sh entries: listOfFiles, listOfSaves, arrayLength
+7. Navigate to 'cd /projects/WANG/mouseBehavior/leap/' 
+	ON TIGER_GPU run code: sbatch predAlignMouse_JV.sh
+8. Navigate to 'projects/WANG/mouseBehavior/' to edit runMouseAlign_JV.sh entries: 
+   listOfFiles, savepath '/aligned', arrayLength
+   ON DELLA: Run code: sbatch runMouseAlign_JV.sh
+	*check videos with plotcentroidaligned.JV
+	need to open matlab as: /usr/licensed/bin/matlab-R2017b -nosplash -nodesktop -nodisplay -singleCompThread -r MATLAB_command
+
+9. printf '%s\n' "$PWD"/*_aligned.h5 >YOURNAME_ALIGNED_List.txt
+start matlab inline and make YOURNAME_PRED_2_List.txt with ‘_PREDICTED_2.h5’ file endings from BOX list:
+/usr/licensed/bin/matlab-R2017b -nosplash -nodesktop -nodisplay -singleCompThread -nojvm -r MATLAB_command
+	% in matlab run the following 
+	F = 'YOURNAME_ALIGNED_List.txt'
+	fid = fopen(F)
+	data = textscan(fid,'%s')
+	fclose(fid)
+	files = data{1};
+	for i = 1:length(files)
+	files2{i} = [files{i}(1:end-3) '_PREDICTED_2.h5'];
+	end
+
+	fid = fopen('YOURNAME_PRED_2_List.txt','wt');
+	for i = 1:length(files2)
+	fprintf(fid,[files2{i} '\n']);
+	end
+	fclose(fid) 
+
+10. Navigate to 'projects/WANG/mouseBehavior/leap' to edit predMultMouse_JV.sh entries:
+	change predMultMouse_JV.sh entries: listOfFiles, arrayLength 
+	ON TIGER_GPU run: sbatch predMultMouse_JV.sh
+11 Move predicted2 files to leapout
+LEAP network for alignments: 181023_131517-n=399
+LEAP network for labeling joints: mouseBox_trainingSet_cluster_6-leap_cnn_epochs=50
+
+---Clustering---
+
+Then locally open the masterscript_DREADD
+
+1) Run FromFilesIDstoCellaray.m
+2) run masterScript_DREADD.m
+	This part may take a long time.
+3) Make text file using cmd: 
+	navigate to folder by just typing the folder whole path then:
+	dir *.mat /s /b > printit.txt
+4)run Distance -> PCA
+  Variance explained to select number of projections (missing code)
+5)PCA projections: plot(1-(vals./sum(vals)))
+6)Go to SPOCK to run on cluster (spock.princeton.edu)
+	edit runSubs_jv.sh if needed 
+	only 20 projections
+	printf '%s\n' "$PWD"/*20.mat > projections20.txt
+	sbatch runSubs_jv.sh (squeue -u jverpeut  to check progress)
+7) Make the trainingsetData list which is next in the code locally
+8) K means clusting: In cluster utilities...edit runC_JV.sh
+run in spock
+navigate to folder: cd /jukebox/wang_mkislin/OldData/Jess/code_and_dataset/mouse-behavior/cluster_utilities
+sbatch runC_jv.sh
+1:10, MaxIter 100, replicate 20, 54 hours
+
+9) open runRE_HDK_jv.sh for editing
+	change SBATCH array for size
+	change all paths
+10) put all aligned mat files into one folder
