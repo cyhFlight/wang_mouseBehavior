@@ -1,4 +1,4 @@
-#! /usr/bin/bash
+#!/usr/bin/bash
 # general code to run matlab inline
 # usage: $ matlab_2017b CODE.m
 /usr/licensed/bin/matlab-R2017b -nosplash -nodesktop -nodisplay -singleCompThread -nojvm -r "run('$1');exit;"

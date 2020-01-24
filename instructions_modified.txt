@@ -1,75 +1,33 @@
-﻿---MOVING PROCESSING AND ALIGNMENT---
+﻿---FIRST TIME SET UP---
 
-1. Navigate to folder with all movies for analysis and create following subfolders: 'box', 'aligned', 'leapout' and set rights to rwxrwxrwx or 0777
-2. On DELLA navigate to folder with movies then run:  printf '%s\n' "$PWD"/*.h5 > YOURNAME_List.txt
-3. Navigate to: 'projects/WANG/mouseBehavior/' to edit runBOX_jv.sh entries: 
-	array=1-PUT NUMBER OF FILES;
-	listOfFiles = path-to-/YOURNAME_List.txt; 
-	check that matlab function is right for your experiment(makeMOuseBox2)
-	savePath(ex: '/tigress/USER/../../box'), arrayLength
-4. Navigate to: 'projects/WANG/mouseBehavior/' 
-	On DELLA run code: sbatch runBox_jv.sh
-	to check progress: squeue -u jverpeut
-	check box movies in savePath by plotting mouseDataBox from '*_box_data.mat'
-5. On DELLA navigate to 'box' folder then run: printf '%s\n' "$PWD"/*.h5 > YOURNAME_BOX_List.txt
-	* this is now done using '$ sh make_BOX_list.sh'
-5a. start matlab in line and make YOURNAME_PRED_List.txt with ‘_PREDICTED.h5’ file endings from BOX list:
-/usr/licensed/bin/matlab-R2017b -nosplash -nodesktop -nodisplay -singleCompThread -nojvm -r MATLAB_command
-	% in matlab run the following 
-	F = 'YOURNAME_BOX_List.txt'
-	fid = fopen(F);
-	data = textscan(fid,'%s');
-	fclose(fid);
-	files = data{1};
-	for i = 1:length(files)
-	files2{i} = [files{i}(1:end-3) '_PREDICTED.h5'];
-	end
+. On Della, in your home folder, create two folders by running 'mkdir -p bin codes'
+. git Yuhang's repo to your under /codes, or run 'cp /tigress/yuhang/wang_lab/scripts ~/codes/'
+. Copy all files (or create symbolic links) from scripts/bin/ to your own ~/bin/ folder
+. Go to /codes/scripts/sbatch_scripts/sbatchTemplates/, edit .sbTemp files with your email
 
-	fid = fopen('YOURNAME_PRED_List.txt','wt');
-	for i = 1:length(files2)
-	fprintf(fid,[files2{i} '\n']);
-	end
-	fclose(fid) 
-
-* this is now done using '$ matlab_2017b predict.m'
-* 
-
-*check videos with plotcentroidbox.JV
-need to open matlab as: /usr/licensed/bin/matlab-R2017b -nosplash -nodesktop -nodisplay -singleCompThread -r MATLAB_command
-
-6. Navigate to 'projects/WANG/mouseBehavior/leap' to edit predAlignMouse.sh entries: 
-    change predAlignMouse.sh entries: listOfFiles, listOfSaves, arrayLength
-7. Navigate to 'cd /projects/WANG/mouseBehavior/leap/' 
-	ON TIGER_GPU run code: sbatch predAlignMouse_JV.sh
-8. Navigate to 'projects/WANG/mouseBehavior/' to edit runMouseAlign_JV.sh entries: 
-   listOfFiles, savepath '/aligned', arrayLength
-   ON DELLA: Run code: sbatch runMouseAlign_JV.sh
+---MOVING PROCESSING AND ALIGNMENT---
+. On Della, navigate to folder with all movies for analysis, make symbolic links by 
+	'ln -s ~/codes/scripts/sbatch_scripts/sbatchTemplates/ ./'
+. Run (by just entering) init_dir.sh
+	This will generate all the List.txt files and sbatch files you need
+. On DELLA run code: 'sbatch 1_runBox.sb'
+. Wait until the job finishes. You should get emails about it.
+	*check box movies in savePath by plotting mouseDataBox from '*_box_data.mat'
+	*check videos with plotcentroidbox.JV
+		need to open matlab as: 
+		/usr/licensed/bin/matlab-R2017b -nosplash -nodesktop -nodisplay -singleCompThread -r MATLAB_command
+	**If fails, check the slurm output files under /projects/WANG/mouseBehavior/slurm_logs/
+. Switch to TIGER_GPU, and go to the same folder, run code: 'sbatch 2_predAlignMouse.sb'
+. Wait for the job to finish. Then switch back to Della folder
+. Run 'sbatch 3_runMouseAlign.sb'
+. Wait for the job to finish.
 	*check videos with plotcentroidaligned.JV
 	need to open matlab as: /usr/licensed/bin/matlab-R2017b -nosplash -nodesktop -nodisplay -singleCompThread -r MATLAB_command
+. Log onto TIGER_GPU, in the same folder run: 'sbatch 4_predMultMouse_JV.sb'
 
-9. printf '%s\n' "$PWD"/*_aligned.h5 >YOURNAME_ALIGNED_List.txt
-start matlab inline and make YOURNAME_PRED_2_List.txt with ‘_PREDICTED_2.h5’ file endings from BOX list:
-/usr/licensed/bin/matlab-R2017b -nosplash -nodesktop -nodisplay -singleCompThread -nojvm -r MATLAB_command
-	% in matlab run the following 
-	F = 'YOURNAME_ALIGNED_List.txt'
-	fid = fopen(F)
-	data = textscan(fid,'%s')
-	fclose(fid)
-	files = data{1};
-	for i = 1:length(files)
-	files2{i} = [files{i}(1:end-3) '_PREDICTED_2.h5'];
-	end
-
-	fid = fopen('YOURNAME_PRED_2_List.txt','wt');
-	for i = 1:length(files2)
-	fprintf(fid,[files2{i} '\n']);
-	end
-	fclose(fid) 
-
-10. Navigate to 'projects/WANG/mouseBehavior/leap' to edit predMultMouse_JV.sh entries:
-	change predMultMouse_JV.sh entries: listOfFiles, arrayLength 
-	ON TIGER_GPU run: sbatch predMultMouse_JV.sh
 11 Move predicted2 files to leapout
+* should be done by change the MATLAB code above (from aligned/ to leapout/)
+
 LEAP network for alignments: 181023_131517-n=399
 LEAP network for labeling joints: mouseBox_trainingSet_cluster_6-leap_cnn_epochs=50
 
