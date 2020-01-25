@@ -14,6 +14,6 @@ sed "s@^@${PWD}/@" < h5List.txt > ${HEADER}_List.txt
 sed "s@${HEADER}/@${HEADER}/box/@ ;s@.h5\$@_box.h5@" < ${HEADER}_List.txt > BOX_List.txt
 sed 's@_box.h5$@_box_PREDICTED.h5@' <BOX_List.txt > PRED_List.txt
 sed 's@box/@aligned/@ ;s@_box.h5$@_box_aligned.h5@' <BOX_List.txt > ALIGNED_List.txt
-sed 's@_aligned.h5$@_aligned_PREDICTED_2.h5@' <ALIGNED_List.txt > PRED_2_List.txt
+sed 's@_aligned.h5$@_aligned_PREDICTED_2.h5@ ;s@/aligned/@/leapout/@' <ALIGNED_List.txt > PRED_2_List.txt
 
 genSbatchFiles.sh
