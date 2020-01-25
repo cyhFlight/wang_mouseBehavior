@@ -1,9 +1,11 @@
-﻿---FIRST TIME SET UP---
+# Instructions for Wang lab video processing pipeline
 
-. On Della, in your home folder, create two folders by running 'mkdir -p bin codes'
-. git Yuhang's repo to your under /codes, or run 'cp /tigress/yuhang/wang_lab/scripts ~/codes/'
-. Copy all files (or create symbolic links) from scripts/bin/ to your own ~/bin/ folder
-. Go to /codes/scripts/sbatch_scripts/sbatchTemplates/, edit .sbTemp files with your email
+## First time set up
+
+1. On Della, in your home folder, create two folders by running 'mkdir -p bin codes'
+2. Git this repo to your folder on Della under /codes, or run 'cp /tigress/yuhang/wang_lab/scripts ~/codes/'
+3. Copy all files (or create symbolic links) from scripts/bin/ to your own ~/bin/ folder
+4. Go to /codes/scripts/sbatch_scripts/sbatchTemplates/, edit .sbTemp files about the email notification.
 
 ---MOVING PROCESSING AND ALIGNMENT---
 . On Della, navigate to folder with all movies for analysis, make symbolic links by 
