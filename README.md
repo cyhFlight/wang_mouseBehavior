@@ -57,11 +57,10 @@ sbatch 3_runMouseAlign.sb
 ```
 sbatch 4_predMultMouse_JV.sb
 ```
-11 Move predicted2 files to leapout
-* should be done by change the MATLAB code above (from aligned/ to leapout/)
+9. The output .h5 files are all in leapout/ folder.
 
-LEAP network for alignments: 181023_131517-n=399
-LEAP network for labeling joints: mouseBox_trainingSet_cluster_6-leap_cnn_epochs=50
+*LEAP network for alignments: 181023_131517-n=399*  
+*LEAP network for labeling joints: mouseBox_trainingSet_cluster_6-leap_cnn_epochs=50*
 
 ## Clustering
 
